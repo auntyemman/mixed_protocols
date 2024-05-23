@@ -69,12 +69,6 @@ export class JwtAuthGuard implements CanActivate {
     return true;
   }
 
-  // static async validateWsToken(client: Socket): Promise<boolean> {
-  //   const token = this.extractToken(client.handshake.headers.authorization);
-  //   client.data.user = await this.validateToken(token);
-  //   return true;
-  // }
-
   async validateRpcRequest(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToRpc().getData();
     const token = this.extractToken(request.authorization);
