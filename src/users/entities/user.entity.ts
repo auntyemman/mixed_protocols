@@ -18,7 +18,7 @@ export class User extends Document {
 
   @ApiProperty()
   @Field()
-  @Prop({ unique: true, trim: true, required: true })
+  @Prop({ unique: true, trim: true, required: true, lowercase: true })
   email: string;
 
   @ApiProperty()

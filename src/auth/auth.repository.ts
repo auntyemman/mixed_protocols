@@ -24,9 +24,9 @@ export class AuthRepository {
     return newUser;
   }
   async getUserById(id: string): Promise<User> {
-    return this.userModel.findById(id);
+    return await this.userModel.findById(id);
   }
   async getUserByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email: email });
+    return await this.userModel.findOne({ email: email });
   }
 }

@@ -88,5 +88,4 @@ export class JwtAuthGuard implements CanActivate {
     const payload = verify(token, process.env.JWT_SECRET);
     return payload;
   }
-
 }

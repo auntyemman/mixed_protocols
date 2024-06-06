@@ -1,10 +1,4 @@
-import {
-  IsArray,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateChatDto {
   @IsNotEmpty()
@@ -13,14 +7,9 @@ export class CreateChatDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  senderName: string;
+  authorId: string;
 
   @IsNotEmpty()
   @IsString()
-  sender: string;
-
-  @IsNotEmpty()
-  @IsString()
-  receiver: string[];
+  conversationId: string;
 }

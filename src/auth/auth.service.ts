@@ -29,7 +29,9 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<any> {
     const { email, password } = loginDto;
+    console.log(email);
     const user = await this.authRepository.getUserByEmail(email);
+    console.log(user);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -52,8 +54,8 @@ export class AuthService {
     const { userId, password } = validatePayload;
     const user = await this.authRepository.getUserById(userId);
     if (user && user.password === password) {
-      // const { password, ...result } = user;
-      // return result;
+      const { password, ...result } = user;
+      return result;
     }
     return null;
   }

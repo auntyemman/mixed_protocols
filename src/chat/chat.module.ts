@@ -8,11 +8,17 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
 import { ChatController } from './chat.controller';
+import { ConversationSchema } from './entities/conversation.entity';
+import { GroupSchema } from './entities/group.entity';
 
 @Module({
   imports: [
     // AuthModule,
-    MongooseModule.forFeature([{ name: 'Chat', schema: ChatSchema }]),
+    MongooseModule.forFeature([
+      { name: 'Chat', schema: ChatSchema },
+      { name: 'Conversation', schema: ConversationSchema },
+      { name: 'Group', schema: GroupSchema },
+    ]),
     UsersModule,
   ],
   controllers: [ChatController],

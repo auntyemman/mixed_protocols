@@ -2,19 +2,74 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { Chat } from './entities/chat.entity';
-import { JoinChatDto } from './dto/join-chat.dto';
+import { CreateGroupDto } from './dto/create-group.dto';
+import { Conversation } from './entities/conversation.entity';
+import { CreateConversationDto } from './dto/create-conversation.dto';
+import { Group } from './entities/group.entity';
 
 @Injectable()
 export class ChatRepository {
-  constructor(@InjectModel(Chat.name) private chatModel: Model<Chat>) {}
+  constructor(
+    @InjectModel(Chat.name) private chatModel: Model<Chat>,
+    @InjectModel(Conversation.name)
+    private conversationModel: Model<Conversation>,
+    @InjectModel(Group.name) private groupModel: Model<Group>,
+  ) {}
 
-  async create(createChatDto: CreateChatDto): Promise<Chat> {
+  /**---------------------------conversation----------------------- */
+  async createConversation(
+    createConversationDto: CreateConversationDto,
+  ): Promise<Conversation> {
+    const createdConversation = await this.conversationModel.create(
+      createConversationDto,
+    );
+    if (!createdConversation) {
+      throw new InternalServerErrorException('Failed to create conversation');
+    }
+    return createdConversation;
+  }
+
+  async findOneConversation(
+    FilterQuery: FilterQuery<Conversation>,
+  ): Promise<Conversation> {
+    const conversation = await this.conversationModel.findOne(FilterQuery);
+    return conversation;
+  }
+
+  /**---------------------------Group----------------------- */
+  async createGroup(createGroupDto: CreateGroupDto): Promise<Group> {
+    const createdGroup = await this.groupModel.create(createGroupDto);
+    if (!createdGroup) {
+      throw new InternalServerErrorException('Failed to create group');
+    }
+    return createdGroup;
+  }
+
+  async findGroups(filter: FilterQuery<Group>): Promise<Group[]> {
+    return await this.groupModel.find(filter);
+  }
+
+  async findOneGroup(id: string): Promise<Group> {
+    const group = await this.groupModel.findOne({ _id: id });
+    return group;
+  }
+
+  async UpdateGroup(id: string, updateGroupDto: any): Promise<Group> {
+    const group = await this.groupModel.findByIdAndUpdate(id, updateGroupDto, {
+      new: true,
+    });
+    return group;
+  }
+
+  /**---------------------------Chat message----------------------- */
+  async createChat(createChatDto: CreateChatDto): Promise<Chat> {
     const createdChat = new this.chatModel(createChatDto);
     if (!createdChat) {
       throw new InternalServerErrorException('Failed to create chat');
@@ -22,38 +77,7 @@ export class ChatRepository {
     return await createdChat.save();
   }
 
-//   async joinRoom(joinChatDto: JoinChatDto, socketId: string): Promise<Chat> {
-//     const findRoom = await this.chatModel.findOne({ clientId: socketId });
-//     if (!findRoom) {
-//       throw new BadRequestException('Room does not exists');
-//     }
-//     joinChatDto.receivers.map((receiver) => {
-//       return findRoom.receivers.push(receiver);
-//     });
-//     return await findRoom.save();
-//   }
-
-  async findAll(): Promise<Chat[]> {
-    return await this.chatModel.find();
-  }
-
-  async findOne(id: string): Promise<Chat> {
-    return await this.chatModel.findById(id);
-  }
-
-  async findByClientId(socketId: string): Promise<Chat> {
-    return await this.chatModel
-      .findOne({ clientId: socketId })
-      .populate('sender');
-  }
-
-  async update(id: string, updateChatDto: CreateChatDto): Promise<Chat> {
-    return await this.chatModel.findByIdAndUpdate(id, updateChatDto, {
-      new: true,
-    });
-  }
-
-  async delete(id: string): Promise<Chat> {
-    return await this.chatModel.findByIdAndDelete(id);
+  async getChatWithFilter(filter: FilterQuery<Chat>): Promise<Chat[]> {
+    return await this.chatModel.find(filter).sort({ createdAt: -1 });
   }
 }
