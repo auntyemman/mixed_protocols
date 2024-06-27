@@ -11,6 +11,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { UploadHandlersModule } from './upload-handlers/upload-handlers.module';
 import { ChatModule } from './chat/chat.module';
+import { PaymentModule } from './payment/payment.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { ChatModule } from './chat/chat.module';
       }),
     }),
     UploadHandlersModule,
+    PaymentModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],

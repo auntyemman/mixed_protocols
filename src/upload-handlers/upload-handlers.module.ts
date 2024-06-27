@@ -1,17 +1,55 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UploadHandlersService } from './upload-handlers.service';
-import { UploadHandlersRepository } from './upload-handlers.repostiory';
-import { MulterModule } from '@nestjs/platform-express';
+import {
+  UploadHandler,
+  S3UploadHandler,
+  SpacesUploadHandler,
+  LocalDirectoryUploadHandler,
+  UploadServiceType,
+} from './upload-handlers.gateway';
 
 @Module({
-  imports: [
-    MulterModule.registerAsync({
-      useFactory: () => ({
-        dest: './upload',
-      }),
-    }),
+  imports: [ConfigModule],
+  providers: [
+    UploadHandlersService,
+    {
+      provide: UploadHandler,
+      useFactory: (configService: ConfigService): UploadHandler => {
+        const uploadService =
+          configService.get<UploadServiceType>('UPLOAD_SERVICE');
+        switch (uploadService) {
+          case UploadServiceType.S3:
+            return new S3UploadHandler(configService);
+          case UploadServiceType.Spaces:
+            return new SpacesUploadHandler(configService);
+          case UploadServiceType.Local:
+            return new LocalDirectoryUploadHandler(configService);
+          default:
+            throw new Error('Invalid UPLOAD_SERVICE value');
+        }
+      },
+      inject: [ConfigService],
+    },
   ],
-  controllers: [],
-  providers: [UploadHandlersService, UploadHandlersRepository],
+  exports: [UploadHandlersService],
 })
 export class UploadHandlersModule {}
+
+// import { Module } from '@nestjs/common';
+// import { UploadHandlersService } from './upload-handlers.service';
+// import { UploadHandlersRepository } from './upload-handlers.repostiory';
+// import { MulterModule } from '@nestjs/platform-express';
+
+// @Module({
+//   imports: [
+//     MulterModule.registerAsync({
+//       useFactory: () => ({
+//         dest: './upload',
+//       }),
+//     }),
+//   ],
+//   controllers: [],
+//   providers: [UploadHandlersService, UploadHandlersRepository],
+// })
+// export class UploadHandlersModule {}

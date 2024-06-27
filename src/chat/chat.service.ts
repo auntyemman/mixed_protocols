@@ -96,5 +96,4 @@ export class ChatService {
   //   }
   //   return await this.chatRepository.joinRoom(joinChatDto, socketId);
   // }
-
 }

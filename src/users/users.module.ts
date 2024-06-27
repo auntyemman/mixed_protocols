@@ -7,8 +7,10 @@ import { UserRepository } from './users.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersResolver } from './users.resolver';
-import { UploadHandlersService } from 'src/upload-handlers/upload-handlers.service';
-import { UploadHandlersRepository } from 'src/upload-handlers/upload-handlers.repostiory';
+import { UploadHandler } from 'src/upload-handlers/upload-handlers.gateway';
+import { UploadHandlersModule } from '../upload-handlers/upload-handlers.module'
+// import { UploadHandlersService } from 'src/upload-handlers/upload-handlers.service';
+// import { UploadHandlersRepository } from 'src/upload-handlers/upload-handlers.repostiory';
 
 @Module({
   imports: [
@@ -24,14 +26,15 @@ import { UploadHandlersRepository } from 'src/upload-handlers/upload-handlers.re
         };
       },
     }),
+    UploadHandlersModule,
   ],
   controllers: [UsersController],
   providers: [
     UsersService,
     UserRepository,
     UsersResolver,
-    UploadHandlersService,
-    UploadHandlersRepository,
+    // UploadHandlersService,
+    // UploadHandlersRepository,
   ],
   exports: [UsersService, UserRepository],
 })

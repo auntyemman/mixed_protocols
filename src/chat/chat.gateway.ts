@@ -99,5 +99,4 @@ export class ChatGateway implements OnModuleInit {
     //const getUserName = await this.chatService.getUserFromClientId(client.id);
     client.broadcast.emit('typing', { isTyping });
   }
-
 }

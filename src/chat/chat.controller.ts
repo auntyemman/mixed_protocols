@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
 import { CreateChatDto } from './dto/create-chat.dto';
@@ -41,7 +49,7 @@ export class ChatController {
     const { userId } = req.user as any;
     const group = await this.chatService.leaveGroup(groupId, userId);
     this.chatGateway.leaveGroup(groupId, userId);
-    return group; 
+    return group;
   }
 
   @Post('send')

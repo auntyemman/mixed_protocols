@@ -81,10 +81,10 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<any> {
     const allowedMimeTypes = {
-      avatar: ['image/jpeg', 'image/png', 'text/plain'],
+      avatar: ['image/jpeg', 'image/png', 'text/plain', 'application/pdf'],
     };
     const allowedFileSizes = {
-      avatar: 1024 * 5,
+      avatar: 1024 * 1024 * 5,
     };
     let avatarPath: string;
 
@@ -101,8 +101,7 @@ export class UsersController {
       if (avatarFile.size > allowedFileSizes.avatar) {
         throw new BadRequestException('File size exceeds the limit');
       }
-      avatarPath =
-        await this.uploadHandlersService.uploadToLocalDirectory(avatarFile);
+      avatarPath = await this.uploadHandlersService.uploadFile(avatarFile);
     }
     body.avatar = avatarPath;
     const result = await this.usersService.updateUser(id, body);
