@@ -3,7 +3,7 @@ import { S3 } from 'aws-sdk';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
-import { extractKeyFromUrl } from '../common/utils/uploadUrlKey'; // Import the utility function
+import { extractKeyFromUrl } from '../common/utils/uploadUrlKey';
 
 // Enum for Upload Service Types
 export enum UploadServiceType {
@@ -48,7 +48,7 @@ export class S3UploadHandler extends UploadHandler {
   }
 
   async deleteFile(url: string): Promise<void> {
-    const key = extractKeyFromUrl(url); // Use the utility function
+    const key = extractKeyFromUrl(url);
 
     const params = {
       Bucket: this.configService.get<string>('AWS_S3_BUCKET_NAME'),
@@ -95,7 +95,7 @@ export class SpacesUploadHandler extends UploadHandler {
   }
 
   async deleteFile(url: string): Promise<void> {
-    const key = extractKeyFromUrl(url); // Use the utility function
+    const key = extractKeyFromUrl(url);
 
     const params = {
       Bucket: this.configService.get<string>('SPACES_BUCKET_NAME'),
