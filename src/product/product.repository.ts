@@ -24,6 +24,10 @@ export class ProductRepository {
     return createdProduct;
   }
 
+  async findProductById(id: string): Promise<Product> {
+    return await this.productModel.findOne({ _id: id });
+  }
+
   async createCart(cart: any): Promise<Cart> {
     const createdCart = await this.cartModel.create(cart);
     if (!createdCart) {
@@ -52,6 +56,12 @@ export class ProductRepository {
       throw new Error('Failed to create order');
     }
     return createdOrder;
+  }
+
+  async updateOrder(id: string, order: any): Promise<Order> {
+    return await this.orderModel.findOneAndUpdate({ _id: id }, order, {
+      new: true,
+    });
   }
 
   async findOrderById(id: string): Promise<Order> {

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes } from 'mongoose';
+import { Items } from '../dto/order.dto';
 
 export type OrderDocument = Order & Document;
 
@@ -8,39 +9,35 @@ export class Order {
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
   userId: string;
 
-  @Prop({ type: [{ type: SchemaTypes.ObjectId, ref: 'Cart' }] })
-  items: string[];
+  @Prop([
+    {
+      productId: { type: SchemaTypes.ObjectId, ref: 'Product', required: true },
+      quantity: { type: Number, required: true },
+    },
+  ])
+  items: Items;
 
-  @Prop({ required: true, default: 0 })
+  @Prop({ trim: true, default: 0 })
   total: number;
 
-  @Prop({ type: String, required: true, default: 'pending' })
+  @Prop({
+    type: String,
+    trim: true,
+    enum: ['pending', 'active', 'shipped', 'delivered', 'cancelled'],
+    default: 'pending',
+  })
   status: string;
 
-  @Prop({ required: true })
+  @Prop({ trim: true })
   paymentReference: string;
 
   @Prop({
-    required: true,
+    trim: true,
     enum: ['paid', 'failed', 'unpaid'],
     default: 'unpaid',
   })
   paymentStatus: string;
 
-  @Prop({ required: true })
-  paymentAmount: number;
-
-  @Prop({ required: true })
-  paymentCurrency: string;
-
-  @Prop({ required: true })
-  transactionDate: Date;
-
-  @Prop({ required: true })
-  customerEmail: string;
-
-  @Prop({ required: true })
-  paymentMethod: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

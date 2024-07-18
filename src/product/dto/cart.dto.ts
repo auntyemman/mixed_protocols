@@ -8,12 +8,11 @@ import {
   isNotEmpty,
 } from 'class-validator';
 
-// class Items {
-//   productId: string;
-//   quantity: number;
-// }
-
 export class CreateCartDto {
+  @IsNotEmpty()
+  @IsString()
+  cartId: string;
+
   @IsNotEmpty()
   @IsString()
   userId: string;
@@ -29,9 +28,15 @@ export class CreateCartDto {
 export class UpdateCartDto {
   @IsNotEmpty()
   @IsString()
-  userId: string;
+  cartId: string;
 
   @IsNotEmpty()
   @IsString()
   productId: string;
+}
+
+export class ClearCartDto {
+  @IsNotEmpty()
+  @IsString()
+  cartId: string;
 }

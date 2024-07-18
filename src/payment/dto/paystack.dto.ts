@@ -6,7 +6,7 @@ export type PaystackCreateTransactionDto = {
 };
 
 export type PaystackMetadata = {
-  user_id: number;
+  user_id: string;
   product_id: string;
   callback_url?: string;
   custom_fields: PaystackMetadataCustomField[];
@@ -28,9 +28,16 @@ export type PaystackVerifyTransactionResponseDto = {
   status: boolean;
   message: string;
   data: {
+    id: number;
     status: string;
     reference: string;
+    domain: string;
+    amount: number;
+    currency: string;
+    paid_at: string;
+    channel: string;
   };
+  fees: number;
 };
 
 export type PaystackWebhookDto = {
@@ -54,18 +61,18 @@ export type Data = {
   metadata?: any;
 
   message?: any;
-  fees: any;
+  fees?: number;
   log: any;
   customer: any;
   authorization: any;
   plan: any;
 };
 
-export class PaystackCallbackDto {
+export type PaystackCallbackDto = {
   reference: string;
-}
+};
 
 export enum PaymentStatus {
-  pain = 'paid',
+  paid = 'paid',
   notPaid = 'not paid',
 }
