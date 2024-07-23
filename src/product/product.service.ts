@@ -5,17 +5,23 @@ import {
 } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ClearCartDto, CreateCartDto, UpdateCartDto } from './dto/cart.dto';
-import { CreateOrderDto, Items } from './dto/order.dto';
+import { CreateOrderDto, Items, OrderStatus } from './dto/order.dto';
 import { ProductRepository } from './product.repository';
 import { Product } from './entities/product.entity';
 import { Cart } from './entities/cart.entity';
 import { Order, OrderDocument } from './entities/order.entity';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { PaymentStatus } from 'src/payment/dto/paystack.dto';
+import { Observable } from 'rxjs';
+import { Model } from 'mongoose';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly productRepository: ProductRepository) {}
+  constructor(
+    private readonly productRepository: ProductRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     return await this.productRepository.createProduct(createProductDto);
@@ -88,7 +94,7 @@ export class ProductService {
   async orderPaymentUpdate(orderId: string): Promise<Order> {
     const order = await this.productRepository.findOrderById(orderId);
     order.paymentStatus = PaymentStatus.paid;
-    order.status = 'active';
+    order.status = OrderStatus.ACTIVE;
     return await this.productRepository.updateOrder(orderId, order);
   }
 
@@ -101,5 +107,35 @@ export class ProductService {
       total += product.price * item.quantity;
     }
     return total;
+  }
+
+  @OnEvent('payment success')
+  async watchOrderStatus(orderId: string): Promise<Observable<string>> {
+    // impmentating away to watch order status using mongodb replica set
+    // const changeStreams = this.orderModel.watch([
+    //   {
+    //     $match: {
+    //       'documentKey._id': orderId,
+    //     },
+    //   },
+    // ]);
+
+    // const changeStreams = this.productRepository.watchOrderStatus(orderId);
+    const changeStream = await this.productRepository.findOrderById(orderId);
+    return new Observable<string>((subscriber) => {
+      // changeStream.on('change', (data) => {
+      //   subscriber.next(data.status);
+      // });
+      subscriber.next(changeStream.status);
+
+      // Clean up the event listener when the subscriber unsubscribes
+      return () => {
+        // changeStream.close().catch((error) => {
+        //   subscriber.error(error);
+        // });
+        subscriber.complete();
+        subscriber.unsubscribe();
+      };
+    });
   }
 }

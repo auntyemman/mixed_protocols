@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, SchemaTypes } from 'mongoose';
-import { Items } from '../dto/order.dto';
+import { Items, OrderStatus } from '../dto/order.dto';
 
 export type OrderDocument = Order & Document;
 
@@ -23,10 +23,9 @@ export class Order {
   @Prop({
     type: String,
     trim: true,
-    enum: ['pending', 'active', 'shipped', 'delivered', 'cancelled'],
     default: 'pending',
   })
-  status: string;
+  status: OrderStatus;
 
   @Prop({ trim: true })
   paymentReference: string;

@@ -15,8 +15,14 @@ import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { CreateCartDto, UpdateCartDto, ClearCartDto } from './dto/cart.dto';
 import { CreateOrderDto } from './dto/order.dto';
 import { from, Observable } from 'rxjs';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-
+import { map } from 'rxjs/operators';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { AbacGuard } from 'src/common/guards/abac.gaurd';
+import { Attributes } from 'src/common/decorators/attributes.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Permissions } from 'src/common/decorators/permission.dedcorator';
+import { RolesGuard } from 'src/common/guards/rbac.gaurd';
+import { PermissionsGuard } from 'src/common/guards/pbac.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductController {
@@ -25,16 +31,22 @@ export class ProductController {
     private readonly eventEmitter: EventEmitter2
   ) {}
 
+  @Attributes({ email: 'jibola4@gmail.com' }, { lastName: 'Paso' })
+  @UseGuards(AbacGuard)
   @Post('/create')
   async create(@Body() createProductDto: CreateProductDto) {
     return await this.productService.createProduct(createProductDto);
   }
 
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Post('/cart/add')
   async addToCart(@Body() createCartDto: CreateCartDto) {
     return await this.productService.addToCart(createCartDto);
   }
 
+  @Permissions('able_to_remove')
+  @UseGuards(PermissionsGuard)
   @Patch('/cart/remove')
   async removeFromCart(@Body() updateCartDto: UpdateCartDto) {
     return await this.productService.removeFromCart(updateCartDto);
@@ -55,38 +67,20 @@ export class ProductController {
     return await this.productService.itemsTotal(items);
   }
 
-  // @Sse()
-  // @Get('/order/payment-update')
-  // async orderPaymentUpdate(): Observable<MessageEvent<any>> {
-  //   return new Observable((subscriber) => {
-  //     this.eventEmitter.on('payment success', (orderId) => {
-  //       const update = await this.productService.orderPaymentUpdate(orderId);
-  //       subscriber.next({ message: 'payment success', data: update });
-  //     });
-  //   });
-  // }
-
-  @Sse()
-  @Get('/payment-update')
-  orderPaymentUpdate(): Observable<MessageEvent> {
-    return new Observable<MessageEvent>((subscriber) => {
-      const handler = async (orderId: string) => {
-        try {
-          const update = from(
-            await this.productService.orderPaymentUpdate(orderId),
-          );
-          subscriber.next({ data: { update } });
-        } catch (error) {
-          subscriber.error(error);
-        }
-      };
-
-      this.eventEmitter.on('payment success', handler);
-
-      // Clean up the event listener when the subscriber unsubscribes
-      return () => {
-        this.eventEmitter.off('payment success', handler);
-      };
-    });
+  @OnEvent('order status')
+  // @Sse(':id/statuss')
+  @Get(':id/statuss')
+  async orderStatusEevnt(@Param('id') id: string): Promise<any> {
+    const order = await this.productService.findOrder(id);
+    return {
+      data: order.status,
+    };
   }
+
+  @Sse(':id/status')
+  async orderStatus(@Param('id') id: string): Promise<Observable<string>> {
+    return await this.productService.watchOrderStatus(id);
+      // .pipe(map((data) => ({ data }))) as Observable<MessageEvent>;
+  }
+
 }

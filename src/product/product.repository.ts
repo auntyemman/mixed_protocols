@@ -2,18 +2,22 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './entities/product.entity';
 import { Cart } from './entities/cart.entity';
-import { Order } from './entities/order.entity';
+import { Order, OrderDocument } from './entities/order.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { CreateCartDto, UpdateCartDto } from './dto/cart.dto';
 import { CreateOrderDto } from './dto/order.dto';
 
+export interface ChangeStream {
+  on(event: 'change', listener: (doc: any) => void): this;
+  close(): Promise<void>;
+}
 @Injectable()
 export class ProductRepository {
   constructor(
     @InjectModel('Product') private readonly productModel: Model<Product>,
     @InjectModel('Cart') private readonly cartModel: Model<Cart>,
-    @InjectModel('Order') private readonly orderModel: Model<Order>,
+    @InjectModel('Order') private readonly orderModel: Model<OrderDocument>,
   ) {}
 
   async createProduct(product: CreateProductDto): Promise<Product> {
@@ -64,7 +68,21 @@ export class ProductRepository {
     });
   }
 
-  async findOrderById(id: string): Promise<Order> {
+  watchOrderStatus(orderId: string): ChangeStream {
+    const order: ChangeStream = this.orderModel.watch([
+      {
+        $match: {
+          'documentKey._id': orderId,
+        },
+      },
+    ]);
+    if (!order) {
+      throw new Error('Order not found');
+    }
+    return order;
+  }
+
+  async findOrderById(id: string): Promise<OrderDocument> {
     return await this.orderModel.findOne({ _id: id });
   }
 

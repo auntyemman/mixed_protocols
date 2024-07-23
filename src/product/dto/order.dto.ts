@@ -1,5 +1,12 @@
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
+export enum OrderStatus {
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
+}
 export class CreateOrderDto {
   @IsNotEmpty()
   @IsString()
