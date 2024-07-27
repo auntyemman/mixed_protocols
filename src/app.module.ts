@@ -13,6 +13,7 @@ import { UploadHandlersModule } from './upload-handlers/upload-handlers.module';
 import { ChatModule } from './chat/chat.module';
 import { PaymentModule } from './payment/payment.module';
 import { ProductModule } from './product/product.module';
+import { PricingModule } from './pricing/pricing.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ProductModule } from './product/product.module';
     UploadHandlersModule,
     PaymentModule,
     ProductModule,
+    PricingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
