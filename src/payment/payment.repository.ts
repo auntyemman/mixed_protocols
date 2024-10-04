@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto, UpdatePaymentDto } from './dto/payment.dto';
 import { PaystackCallbackDto, PaystackWebhookDto } from './dto/paystack.dto';
 
-
 @Injectable()
 export class PaymentRepository {
   constructor(
@@ -44,5 +43,4 @@ export class PaymentRepository {
   async findPaymentByUserId(serId: string): Promise<Payment> {
     return await this.paymentModel.findOne({ serId: serId });
   }
-
 }

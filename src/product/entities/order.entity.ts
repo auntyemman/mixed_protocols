@@ -36,7 +36,6 @@ export class Order {
     default: 'unpaid',
   })
   paymentStatus: string;
-
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

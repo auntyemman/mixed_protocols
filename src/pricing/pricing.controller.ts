@@ -9,7 +9,6 @@ export class PricingController {
   constructor(
     private readonly discountService: DiscountService,
     private readonly couponService: CouponService,
-
   ) {}
 
   @Post('/discount')

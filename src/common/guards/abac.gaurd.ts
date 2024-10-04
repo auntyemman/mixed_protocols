@@ -9,12 +9,11 @@ export class AbacGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    
     const attributes = this.reflector.get<string[]>(
       'attributes',
       context.getHandler(),
     );
-    
+
     if (!attributes) {
       return true;
     }
@@ -24,8 +23,7 @@ export class AbacGuard implements CanActivate {
 
     return attributes.every((attribute) => {
       const [key, value] = Object.entries(attribute)[0];
-      return user[key] === value
+      return user[key] === value;
     });
-
   }
 }

@@ -90,7 +90,7 @@ export class PaystackService extends PaymentService {
           userId: userId,
           paymentReference: data.reference,
           paymentlink: data.authorization_url,
-        }
+        };
         return await this.paymentRepository.createPayment(createPaymentDto);
       }
       return null;

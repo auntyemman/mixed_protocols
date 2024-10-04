@@ -24,12 +24,11 @@ export class CouponService {
     code: string,
     date: Date,
   ): Promise<Coupon | null> {
-    return this.couponRepository
-      .findOne({
-        code,
-        products: productId,
-        startDate: { $lte: date },
-        endDate: { $gte: date },
+    return this.couponRepository.findOne({
+      code,
+      products: productId,
+      startDate: { $lte: date },
+      endDate: { $gte: date },
     });
   }
 

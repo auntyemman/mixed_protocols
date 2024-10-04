@@ -54,7 +54,7 @@ export class PaymentController {
       userId: userId,
       items: order.items,
       product: products,
-    }
+    };
     return await this.paymentService.initializePayment(paymentPayload);
   }
 

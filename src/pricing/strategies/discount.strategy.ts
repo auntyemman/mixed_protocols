@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PricingStrategy } from '../interfaces/pricing-strategy.interface';
-  
+
 @Injectable()
 export class PercentageDiscountStrategy implements PricingStrategy {
   calculateFinalPrice(basePrice: number, value: number): number {
@@ -33,4 +33,3 @@ export class NoDiscountStrategy implements PricingStrategy {
     return 0;
   }
 }
-

@@ -44,7 +44,6 @@ export class Payment {
 
   @Prop({ trim: true })
   paymentMethod: string;
-
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

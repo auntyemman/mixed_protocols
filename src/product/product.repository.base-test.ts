@@ -18,5 +18,4 @@ export class ProductRepository extends BaseRepository<ProductDocument> {
   ): Promise<ProductDocument[]> {
     return await this.productModel.find(filter);
   }
-
 }

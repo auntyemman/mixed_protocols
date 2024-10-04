@@ -10,7 +10,6 @@ import {
   UpdateQuery,
 } from 'mongoose';
 
-
 // Base repository with default transactions do the methods
 export abstract class BaseRepository<T extends Document> {
   protected readonly model: Model<T>;
@@ -84,6 +83,4 @@ export abstract class BaseRepository<T extends Document> {
     }
     return result;
   }
-
-
 }

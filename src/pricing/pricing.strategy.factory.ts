@@ -3,7 +3,7 @@ import { PricingStrategy } from './interfaces/pricing-strategy.interface';
 import {
   PercentageDiscountStrategy,
   FixedDiscountStrategy,
-  NoDiscountStrategy
+  NoDiscountStrategy,
 } from './strategies/discount.strategy';
 import { DiscountType } from './dto/discount.dto';
 

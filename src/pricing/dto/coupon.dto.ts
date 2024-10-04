@@ -9,11 +9,10 @@ import {
 import { Type } from 'class-transformer';
 
 export enum CouponType {
-    none = 'none',
-    percentage = 'percentage',
-    fixed = 'fixed',
+  none = 'none',
+  percentage = 'percentage',
+  fixed = 'fixed',
 }
-
 
 export class CreateCouponDto {
   @IsString()

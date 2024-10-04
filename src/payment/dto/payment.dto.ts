@@ -9,7 +9,6 @@ export class InitializeTransactionDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
-
 }
 
 export class CreatePaymentDto {
@@ -74,4 +73,4 @@ export type PaymentPayload = {
   userId: string;
   items: Items;
   product: any;
-}
+};

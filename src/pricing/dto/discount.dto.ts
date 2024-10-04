@@ -1,4 +1,10 @@
-import { IsArray, IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export enum DiscountType {
   none = 'none',

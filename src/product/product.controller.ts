@@ -28,7 +28,7 @@ import { PermissionsGuard } from 'src/common/guards/pbac.guard';
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @Attributes({ email: 'jibola4@gmail.com' }, { lastName: 'Paso' })
@@ -80,7 +80,6 @@ export class ProductController {
   @Sse(':id/status')
   async orderStatus(@Param('id') id: string): Promise<Observable<string>> {
     return await this.productService.watchOrderStatus(id);
-      // .pipe(map((data) => ({ data }))) as Observable<MessageEvent>;
+    // .pipe(map((data) => ({ data }))) as Observable<MessageEvent>;
   }
-
 }
