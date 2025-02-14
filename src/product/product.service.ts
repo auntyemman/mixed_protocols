@@ -27,6 +27,7 @@ export class ProductService {
     return await this.productRepository.createProduct(createProductDto);
   }
 
+
   async getProduct(id: string): Promise<Product> {
     return await this.productRepository.findProductById(id);
   }
