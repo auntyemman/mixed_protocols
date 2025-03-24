@@ -29,7 +29,7 @@ export class ChatGateway implements OnGatewayConnection {
   }
   async handleConnection(@ConnectedSocket() client: Socket) {
     const userId = client.data.user?.userId; // get user id from the decoded data
-    client.join(userId); // User joins websocket client room by id
+    client.join(userId); // User joins websocket client room by id.
     console.log(`Client connected: ${client.id}, joined room: ${userId}`);
 }
   constructor(private readonly chatService: ChatService) {}
