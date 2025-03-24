@@ -32,11 +32,7 @@ import { NotificationsModule } from 'src/notifications/notifications.module';
     NotificationsModule,
   ],
   controllers: [UsersController],
-  providers: [
-    UsersService,
-    UserRepository,
-    UsersResolver,
-  ],
+  providers: [UsersService, UserRepository, UsersResolver],
   exports: [UsersService, UserRepository],
 })
 export class UsersModule {}

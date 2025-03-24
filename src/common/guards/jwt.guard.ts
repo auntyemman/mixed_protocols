@@ -80,14 +80,13 @@ export class JwtAuthGuard implements CanActivate {
   async validateWsToken(context: ExecutionContext): Promise<boolean> {
     const client: Socket = context.switchToWs().getClient();
     const { authorization } = client.handshake.headers;
-    console.log(authorization)
     const token = this.extractToken(authorization);
     const decoded = await this.validateToken(token);
     client.data.user = decoded;
     return true;
   }
 
-  // static method to be used for ws validation
+  // static method to be used for ws middleware token validation
   static async validateWsToken(client: Socket) {
     const { authorization } = client.handshake.headers;
     if (!authorization) {

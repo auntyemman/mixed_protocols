@@ -11,10 +11,12 @@ import { WsException } from '@nestjs/websockets';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { JoinGroupDto } from './dto/join-group.dto';
 import { ObjectId } from 'mongoose';
+import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
   constructor(
+    // private readonly chatGateway: ChatGateway,
     private readonly chatRepository: ChatRepository,
     private readonly usersService: UsersService,
   ) {}
@@ -80,6 +82,8 @@ export class ChatService {
       throw new NotFoundException('User not found');
     }
     const newChat = await this.chatRepository.newChat(newChatDto);
+    // send the new chat to the recipient
+    // await this.chatGateway.handleSendMessage(newChatDto);
     return newChat;
   }
 

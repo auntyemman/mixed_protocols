@@ -40,7 +40,7 @@ export class ChatController {
   async joinGroup(@Req() req: Request, @Param('groupId') groupId: string) {
     const { userId } = req.user as any;
     const group = await this.chatService.joinGroup(groupId, userId);
-    this.chatGateway.joinGroup(groupId, userId);
+    // this.chatGateway.joinGroup(groupId, userId);
     return group;
   }
 
@@ -48,13 +48,14 @@ export class ChatController {
   async leaveGroup(@Req() req: Request, @Param('groupId') groupId: string) {
     const { userId } = req.user as any;
     const group = await this.chatService.leaveGroup(groupId, userId);
-    this.chatGateway.leaveGroup(groupId, userId);
+    // this.chatGateway.leaveGroup(groupId, userId);
     return group;
   }
 
   @Post('send')
   async sendMessage(@Body() newChatDto: newChatDto) {
-    return await this.chatGateway.handleSendMessage(newChatDto);
+    // send the new chat to the recipient through ws gateway
+    return await this.chatGateway.sendNewChat(newChatDto);
   }
 
   @Get('history/:conversationId')

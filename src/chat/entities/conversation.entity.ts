@@ -10,9 +10,6 @@ export class Conversation extends Document {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
   recipientId: string;
-
-  @Prop({ type: [SchemaTypes.ObjectId], ref: 'User' })
-  receivers?: string[];
 }
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation);
