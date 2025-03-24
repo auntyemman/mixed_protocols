@@ -31,10 +31,11 @@ export class JwtAuthGuard implements CanActivate {
     } else if (requestType === 'rpc') {
       return this.validateRpcRequest(context);
     } else if (requestType === 'ws') {
-      const client: Socket = context.switchToWs().getClient();
-      const decoded = JwtAuthGuard.validateWsToken(client);
-      client.data.user = decoded;
-      return true;
+      return this.validateWsToken(context);
+      // const client: Socket = context.switchToWs().getClient();
+      // const decoded = JwtAuthGuard.validateWsToken(client);
+      // client.data.user = decoded;
+      // return true;
     } else {
       throw new UnauthorizedException('Unsupported request type');
     }
@@ -76,6 +77,17 @@ export class JwtAuthGuard implements CanActivate {
     return true;
   }
 
+  async validateWsToken(context: ExecutionContext): Promise<boolean> {
+    const client: Socket = context.switchToWs().getClient();
+    const { authorization } = client.handshake.headers;
+    console.log(authorization)
+    const token = this.extractToken(authorization);
+    const decoded = await this.validateToken(token);
+    client.data.user = decoded;
+    return true;
+  }
+
+  // static method to be used for ws validation
   static async validateWsToken(client: Socket) {
     const { authorization } = client.handshake.headers;
     if (!authorization) {
@@ -85,7 +97,11 @@ export class JwtAuthGuard implements CanActivate {
     if (!token) {
       throw new BadRequestException('Invalid or missing token');
     }
-    const payload = verify(token, process.env.JWT_SECRET);
-    return payload;
+    const decoded = verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      throw new UnauthorizedException('Invalid token');
+    }
+    client.data.user = decoded;
+    return decoded;
   }
 }

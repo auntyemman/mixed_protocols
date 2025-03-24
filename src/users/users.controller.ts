@@ -16,6 +16,7 @@ import {
   UploadedFiles,
   UsePipes,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/createUser.dto';
@@ -56,7 +57,7 @@ export class UsersController {
 
   @ApiOkResponse({ type: User })
   @ApiBearerAuth()
-  @Patch('update/:id')
+  @Patch('me')
   @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }]))
   // @UsePipes(new FileValidationPipe(File))
   async UpdateUser(
@@ -76,9 +77,9 @@ export class UsersController {
     // files: {
     //   avatar?: Express.Multer.File[];
     // },
-    @Param('id') id: string,
     @Body() body: UpdateUserDto,
     @Res() res: Response,
+    @Req() req,
   ): Promise<any> {
     const allowedMimeTypes = {
       avatar: ['image/jpeg', 'image/png', 'text/plain', 'application/pdf'],
@@ -104,7 +105,7 @@ export class UsersController {
       avatarPath = await this.uploadHandlersService.uploadFile(avatarFile);
     }
     body.avatar = avatarPath;
-    const result = await this.usersService.updateUser(id, body);
+    const result = await this.usersService.updateUser(req.user.userId, body);
     return res.status(200).json({ message: 'Success', data: result });
   }
 

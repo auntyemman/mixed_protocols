@@ -6,13 +6,13 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
+import { newChatDto } from './dto/create-chat.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit, UseGuards } from '@nestjs/common';
 import { ServerToClientEvents } from './common/interfaces/event.interface';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
-import { WsMiddleware } from './common/middlewares/ws.middleware';
+// import { WsMiddleware } from './common/middlewares/ws.middleware';
 import { Chat } from './entities/chat.entity';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { JoinGroupDto } from './dto/join-group.dto';
@@ -28,19 +28,16 @@ export class ChatGateway implements OnModuleInit {
       console.log('a user connected', socket.id);
     });
   }
-  afterInit(client: Socket) {
-    client.use(WsMiddleware() as any);
-  }
+  // afterInit(client: Socket) {
+  //   client.use(WsMiddleware() as any);
+  // }
   constructor(private readonly chatService: ChatService) {}
 
   /**---------------http hybrid method--------------- */
   // chat
-  async handleSendMessage(createChatDto: CreateChatDto) {
-    const chat = await this.chatService.createChat(createChatDto);
-    this.server.emit(
-      `receiveMessage ${createChatDto.conversationId}`,
-      createChatDto,
-    );
+  async handleSendMessage(newChatDto: newChatDto) {
+    const chat = await this.chatService.newChat(newChatDto);
+    this.server.emit(`receiveMessage ${newChatDto.conversationId}`, newChatDto);
     return chat;
   }
   async joinGroup(groupId: string, userId: string) {
@@ -54,7 +51,7 @@ export class ChatGateway implements OnModuleInit {
 
   @SubscribeMessage('message')
   async handleMessage(
-    @MessageBody() createChatDto: CreateChatDto,
+    @MessageBody() newChatDto: newChatDto,
     @ConnectedSocket() client: Socket,
   ): Promise<any> {
     const userId = client.data.user?.userId;
@@ -63,22 +60,22 @@ export class ChatGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('newMessage')
-  async newMessage(@MessageBody() createChatDto: CreateChatDto) {
-    const createdMessage = await this.chatService.createChat(createChatDto);
+  async newMessage(@MessageBody() newChatDto: newChatDto) {
+    const createdMessage = await this.chatService.newChat(newChatDto);
     this.server.emit('newMessage', createdMessage);
   }
 
-  @SubscribeMessage('createChat')
+  @SubscribeMessage('newChat')
   async create(
-    @MessageBody() createChatDto: CreateChatDto,
+    @MessageBody() newChatDto: newChatDto,
     @ConnectedSocket() client: Socket,
   ) {
-    // createChatDto.sender = client.id;
-    console.log('create chat', createChatDto, client.id);
-    const newChat = await this.chatService.createChat(createChatDto);
+    // newChatDto.sender = client.id;
+    console.log('create chat', newChatDto, client.id);
+    const newChat = await this.chatService.newChat(newChatDto);
     this.server.emit('newMessage', {
       msg: 'new message',
-      content: createChatDto.content,
+      content: newChatDto.content,
     });
     return newChat;
   }

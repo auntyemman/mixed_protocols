@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
-import { CreateChatDto } from './dto/create-chat.dto';
+import { newChatDto } from './dto/create-chat.dto';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { Conversation } from './entities/conversation.entity';
@@ -53,8 +53,8 @@ export class ChatController {
   }
 
   @Post('send')
-  async sendMessage(@Body() createChatDto: CreateChatDto) {
-    return await this.chatGateway.handleSendMessage(createChatDto);
+  async sendMessage(@Body() newChatDto: newChatDto) {
+    return await this.chatGateway.handleSendMessage(newChatDto);
   }
 
   @Get('history/:conversationId')

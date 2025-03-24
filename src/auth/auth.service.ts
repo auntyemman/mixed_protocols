@@ -29,9 +29,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<any> {
     const { email, password } = loginDto;
-    console.log(email);
     const user = await this.authRepository.getUserByEmail(email);
-    console.log(user);
     if (!user) {
       throw new NotFoundException('User not found');
     }

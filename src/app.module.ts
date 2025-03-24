@@ -15,6 +15,7 @@ import { PaymentModule } from './payment/payment.module';
 import { ProductModule } from './product/product.module';
 import { PricingModule } from './pricing/pricing.module';
 import { DataStreamsModule } from './data-streams/data-streams.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DataStreamsModule } from './data-streams/data-streams.module';
     ProductModule,
     PricingModule,
     DataStreamsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

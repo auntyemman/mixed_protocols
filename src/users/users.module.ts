@@ -9,6 +9,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersResolver } from './users.resolver';
 import { UploadHandler } from 'src/upload-handlers/upload-handlers.gateway';
 import { UploadHandlersModule } from '../upload-handlers/upload-handlers.module';
+import { NotificationsGateway } from 'src/notifications/notifications.gateway';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 // import { UploadHandlersService } from 'src/upload-handlers/upload-handlers.service';
 // import { UploadHandlersRepository } from 'src/upload-handlers/upload-handlers.repostiory';
 
@@ -27,14 +29,13 @@ import { UploadHandlersModule } from '../upload-handlers/upload-handlers.module'
       },
     }),
     UploadHandlersModule,
+    NotificationsModule,
   ],
   controllers: [UsersController],
   providers: [
     UsersService,
     UserRepository,
     UsersResolver,
-    // UploadHandlersService,
-    // UploadHandlersRepository,
   ],
   exports: [UsersService, UserRepository],
 })

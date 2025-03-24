@@ -7,7 +7,7 @@ import {
 
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { CreateChatDto } from './dto/create-chat.dto';
+import { newChatDto } from './dto/create-chat.dto';
 import { Chat } from './entities/chat.entity';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { Conversation } from './entities/conversation.entity';
@@ -69,8 +69,8 @@ export class ChatRepository {
   }
 
   /**---------------------------Chat message----------------------- */
-  async createChat(createChatDto: CreateChatDto): Promise<Chat> {
-    const createdChat = new this.chatModel(createChatDto);
+  async newChat(newChatDto: newChatDto): Promise<Chat> {
+    const createdChat = new this.chatModel(newChatDto);
     if (!createdChat) {
       throw new InternalServerErrorException('Failed to create chat');
     }

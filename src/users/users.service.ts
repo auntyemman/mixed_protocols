@@ -4,10 +4,14 @@ import { UserRepository } from './users.repository';
 import { GetUsersDto } from './dtos/getUsers.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dtos/updateUser.dto';
+import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly notificationsGateway: NotificationsGateway,
+  ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<any> {
     try {
@@ -20,11 +24,15 @@ export class UsersService {
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<any> {
     try {
-      const updateUser = await this.userRepository.findOneAndUpdate(
+      const updatedUser = await this.userRepository.findOneAndUpdate(
         id,
         updateUserDto,
       );
-      return updateUser;
+      await this.notificationsGateway.sendNotification(
+        updatedUser._id.toString(),
+        'Profile updated',
+      );
+      return updatedUser;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Failed to update user');

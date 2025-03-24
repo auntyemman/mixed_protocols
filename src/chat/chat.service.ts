@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CreateChatDto } from './dto/create-chat.dto';
+import { newChatDto } from './dto/create-chat.dto';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ChatRepository } from './chat.repository';
 import { UsersService } from 'src/users/users.service';
@@ -74,12 +74,12 @@ export class ChatService {
     return await this.chatRepository.findOneGroup(id);
   }
 
-  async createChat(createChatDto: CreateChatDto) {
-    const user = await this.usersService.getUserById(createChatDto.authorId);
+  async newChat(newChatDto: newChatDto) {
+    const user = await this.usersService.getUserById(newChatDto.authorId);
     if (!user) {
-      throw new WsException('User not found');
+      throw new NotFoundException('User not found');
     }
-    const newChat = await this.chatRepository.createChat(createChatDto);
+    const newChat = await this.chatRepository.newChat(newChatDto);
     return newChat;
   }
 
