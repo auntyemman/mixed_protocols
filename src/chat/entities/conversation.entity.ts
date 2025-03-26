@@ -10,6 +10,15 @@ export class Conversation extends Document {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
   recipientId: string;
+
+  @Prop({ type: String })
+  name: string; // optional for group
+
+  @Prop({ type: String })
+  type: string; // direct or group group
+
+  @Prop({ type: String })
+  participants: string[];
 }
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation);

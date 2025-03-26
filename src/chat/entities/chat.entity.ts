@@ -10,10 +10,13 @@ export class Chat extends Document {
   content: string;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
-  authorId: string;
+  authorId: string; // sender id
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Conversation' })
   conversationId: string;
+
+  @Prop({ type: String, trim: true })
+  status: string; // delivered, seen or sent 
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
